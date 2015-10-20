@@ -7,3 +7,8 @@ with open("movies.json", "r") as movies_file:
 # parse movies config file
 movies = json.loads(movies_json)
 
+for movie in movies:
+
+	# construct box office url
+	url = "http://www.boxofficemojo.com/movies/?id=" + movie["boxOfficeId"] +".htm"
+	print url
