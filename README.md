@@ -1,1 +1,1 @@
-# scraper_boxoffice
+# boxOfficeCrawler
