@@ -18,7 +18,7 @@ in projects home directory
 [{
 	"name": "Birdman",
 	"boxOfficeId": "birdman",
-	"releaseYear": 2014
+	"release": 20141017
 }]
 ```
 
