@@ -1,1 +1,17 @@
 # boxOfficeCrawler
+
+## Setup
+
+`movies.json` contains setup data for movie scraping. Movies and their boxofficemojo.com Id, that was extracted from the URL of each movie, can be enlisted in the JSON file in order to be scraped.
+
+```javascript
+[{
+	"name": "Birdman",
+	"boxOfficeId": "birdman",
+	"releaseYear": 2014
+}]
+```
+
+The scraping results are:
+
+* Domestic Total Gross in $USD
