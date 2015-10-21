@@ -1,8 +1,10 @@
-import json, requests
+import json, requests, re
 from bs4 import BeautifulSoup
 from string import ascii_uppercase
 
+non_decimal = re.compile(r'[^\d.]+')
 major_sites = ["NUM"]
+movies = []
 
 # feed alphabet into major_site crawl
 for c in ascii_uppercase:
@@ -23,25 +25,48 @@ for site in major_sites:
 		# load html file into parser
 		soup = BeautifulSoup(r.text, "html.parser")
 
-		print "parsed"
 
-		# crawl table
-		tbl = soup.find_all("table")[3]
-		print tbl
-		cells = tbl.find_all("td")
+		# crawl rows
+		rows = soup.find_all("tr")
 
-		# loop over cells
-		i = 0
-		for cell in cells:
-			i = i % 7
-			
-			# first cell
-			if i == 0:
-				print cell.get_text()
+		for row in rows:
+			if "<a href=\"/movies/?id=" in str(row) and "$" in str(row):
 
-			i += 1
+				cells = row.find_all("td")
 
-		print "---"
+				# total gross
+				totalGross = cells[2].get_text().replace("$", "").replace(",", "")
+				totalGross = non_decimal.sub('', totalGross)
+
+				if totalGross:
+					totalGross = int(totalGross)
+
+				# start date
+				startDate = cells[6].get_text()
+
+				if startDate:
+					startDate = startDate.split("/")
+					year = int(startDate[2])
+					month = int(startDate[0])
+					day = int(startDate[1])
+
+				# box office if
+				link = cells[0].find("a").get("href")
+				if link:
+					link = link.replace("/movies/?id=", "").replace(".htm", "")
+
+				movie = {
+					"name": cells[0].get_text(),
+					"boxOfficeId": link,
+					"totalGross": totalGross,
+					"release": {
+						"year": year,
+						"month": month,
+						"day": day
+					}
+				}
+				
+				movies.append(movie)
 
 		page += 1
 
@@ -49,3 +74,5 @@ for site in major_sites:
 			break
 
 	break
+
+print movies
