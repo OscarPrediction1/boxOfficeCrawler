@@ -33,3 +33,7 @@ The scraping results are:
 ```python
 python crawl.py
 ```
+
+## Data sources
+
+Daily View: http://www.boxofficemojo.com/movies/?page=daily&view=chart&id=birdman.htm
