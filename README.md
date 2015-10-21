@@ -2,13 +2,15 @@
 
 ## Installation
 
-Just run 
+1. Just run 
 
 ```bash
 pip install -r requirements.txt
 ```
 
-in projects home directory
+in projects home directory.
+
+2. Rename `example.db.py` to `db.py` and enter your MongoDB connection string to the file.
 
 ## Setup
 
@@ -18,7 +20,12 @@ in projects home directory
 [{
 	"name": "Birdman",
 	"boxOfficeId": "birdman",
-	"release": 20141017
+	"totalGross": 2000000
+	"release": {
+		"year": 2014,
+		"month": 1,
+		"day": 15
+    }
 }]
 ```
 
@@ -31,7 +38,13 @@ The scraping results are:
 ### Crawling movie information
 
 ```python
-python crawl.py
+python crawlSingleMovie.py
+```
+
+### Crawl all available movies
+
+```python
+python crawlMovies.py
 ```
 
 ## Data sources

@@ -1,6 +1,10 @@
-import json, requests, re
+import json, requests, re, db
 from bs4 import BeautifulSoup
 from string import ascii_uppercase
+from pymongo import MongoClient
+
+client = MongoClient(db.conn_string)
+db = client.oscars
 
 non_decimal = re.compile(r'[^\d.]+')
 major_sites = ["NUM"]
@@ -25,14 +29,16 @@ for site in major_sites:
 		# load html file into parser
 		soup = BeautifulSoup(r.text, "html.parser")
 
-
 		# crawl rows
 		rows = soup.find_all("tr")
+
+		parsedCounter = 0
 
 		for row in rows:
 			if "<a href=\"/movies/?id=" in str(row) and "$" in str(row):
 
 				cells = row.find_all("td")
+				parsedCounter += 1
 
 				# total gross
 				totalGross = cells[2].get_text().replace("$", "").replace(",", "")
@@ -44,11 +50,13 @@ for site in major_sites:
 				# start date
 				startDate = cells[6].get_text()
 
-				if startDate:
+				if startDate and "/" in startDate:
 					startDate = startDate.split("/")
-					year = int(startDate[2])
-					month = int(startDate[0])
-					day = int(startDate[1])
+
+					if len(startDate) == 3:
+						year = int(startDate[2])
+						month = int(startDate[0])
+						day = int(startDate[1])
 
 				# box office if
 				link = cells[0].find("a").get("href")
@@ -66,13 +74,11 @@ for site in major_sites:
 					}
 				}
 				
-				movies.append(movie)
+				db.boxOfficeMovies.replace_one({"boxOfficeId": movie["boxOfficeId"]}, movie, upsert=True)
 
 		page += 1
 
-		if site == "NUM":
+		if site == "NUM" or parsedCounter == 0:
 			break
 
-	break
-
-print movies
+print "done"
