@@ -2,9 +2,10 @@ import json, requests, re, db
 from bs4 import BeautifulSoup
 from string import ascii_uppercase
 from pymongo import MongoClient
+from datetime import datetime
 
 client = MongoClient(db.conn_string)
-db = client.oscars
+db = client.oscar
 
 non_decimal = re.compile(r'[^\d.]+')
 major_sites = ["NUM"]
@@ -57,6 +58,11 @@ for site in major_sites:
 						year = int(startDate[2])
 						month = int(startDate[0])
 						day = int(startDate[1])
+						startDate = datetime(year, month, day)
+					else:
+						startDate = None
+				else:
+					startDate = None
 
 				# box office if
 				link = cells[0].find("a").get("href")
@@ -67,14 +73,10 @@ for site in major_sites:
 					"name": cells[0].get_text(),
 					"boxOfficeId": link,
 					"totalGross": totalGross,
-					"release": {
-						"year": year,
-						"month": month,
-						"day": day
-					}
+					"release": startDate
 				}
 				
-				db.boxOfficeMovies.replace_one({"boxOfficeId": movie["boxOfficeId"]}, movie, upsert=True)
+				db.boxoffice_movies.replace_one({"boxOfficeId": movie["boxOfficeId"]}, movie, upsert=True)
 
 		page += 1
 
