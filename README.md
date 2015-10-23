@@ -21,11 +21,8 @@ in projects home directory.
 	"name": "Birdman",
 	"boxOfficeId": "birdman",
 	"totalGross": 2000000
-	"release": {
-		"year": 2014,
-		"month": 1,
-		"day": 15
-    }
+	"release": new Date(),
+	"history": []
 }]
 ```
 
@@ -35,10 +32,10 @@ The scraping results are:
 
 ## Usage
 
-### Crawling movie information
+### Crawling historic box office data in a daily fashion
 
 ```python
-python crawlSingleMovie.py
+python crawlHistories.py
 ```
 
 ### Crawl all available movies
