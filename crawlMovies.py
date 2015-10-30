@@ -69,11 +69,24 @@ for site in major_sites:
 				if link:
 					link = link.replace("/movies/?id=", "").replace(".htm", "")
 
+				# fetch director
+				dir_url = "http://www.boxofficemojo.com/movies/?id=" + link + ".htm"
+				dir_r = requests.get(dir_url)
+
+				# load html file into parser
+				dir_soup = BeautifulSoup(dir_r.text, "html.parser")
+
+				directors = []
+				for a in dir_soup.find_all("a"):
+					if "/people/chart/?view=Director" in a.get("href"):
+						directors.append(a.get_text())
+
 				movie = {
 					"name": cells[0].get_text(),
 					"boxOfficeId": link,
 					"totalGross": totalGross,
-					"release": startDate
+					"release": startDate,
+					"directors": directors
 				}
 				
 				db.boxoffice_movies.replace_one({"boxOfficeId": movie["boxOfficeId"]}, movie, upsert=True)
