@@ -64,6 +64,10 @@ for site in major_sites:
 				else:
 					startDate = None
 
+				if year:
+					if year < 2015:
+						continue
+
 				# box office if
 				link = cells[0].find("a").get("href")
 				if link:
